@@ -4,6 +4,7 @@
 #include <GL/freeglut.h> //include glut for Windows
 #endif
 #include <math.h>
+#include "main.h"
 
 
 // the window's width and height
@@ -21,33 +22,57 @@ void init(void)
     height = 600;
 }
 
+void drawFilledCircle(float red, float green, float blue, float center_x, float
+    center_y, float radius)
+{
+    glColor3f(red, green, blue);
+
+    glBegin(GL_POLYGON);
+
+    for (int i = 0; i < vertNum; i++) {
+        float degree = (float)i / vertNum * 2.0f * 3.14f;
+        float x = radius * cos(degree) + center_x;
+        float y = radius * sin(degree) + center_y;
+        glVertex2f(x, y);
+    }
+
+    glEnd();
+}
+
+void drawWireframeCircle(float red, float green, float blue, float center_x, float
+    center_y, float radius, float lineWidth)
+{
+    glColor3f(red, green, blue);
+    glLineWidth(lineWidth);
+
+    glBegin(GL_LINE_LOOP);
+
+    for (int i = 0; i < vertNum; i++) {
+        float degree = (float)i / vertNum * 2.0f * 3.14f;
+        float x = radius * cos(degree) + center_x;
+        float y = radius * sin(degree) + center_y;
+        glVertex2f(x, y);
+    }
+
+    glEnd();
+}
+
 // called when the GL context need to be rendered
 void display(void)
 {
-    // clear the screen to white, which is the background color
+    // clear the screen to black, which is the background color
     glClearColor(0.0, 0.0, 0.0, 0.0);
 
     // clear the buffer stored for drawing
     glClear(GL_COLOR_BUFFER_BIT);
 
-
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    // specify the color and line width for drawing
-    glColor3f(0.0, 1.0, 1.0);
-    glLineWidth(5.0);
-
-    // draw a circle
-    glBegin(GL_LINE_LOOP);
-
-    for (int i = 0; i < vertNum; i++) {
-        float degree = (float)i / vertNum * 2.0f * 3.14f;
-        float x = r * cos(degree) + xo;
-        float y = r * sin(degree) + yo;
-        glVertex2f(x, y);
-    }
-    glEnd();
+    // draw the circles
+    //TODO: use the circle-drawing functions to draw the panda
+    drawFilledCircle(1.0, 1.0, 1.0, 4.0, 4.0, 1.0);
+    drawWireframeCircle(0.0, 1.0, 0.0, 2.0, 2.0, 1.0,3.0);
 
     glutPostRedisplay();
     glutSwapBuffers();
@@ -56,7 +81,7 @@ void display(void)
 // called when window is first created or when window is resized
 void reshape(int w, int h)
 {
-    // update thescreen dimensions
+    // update the screen dimensions
     width = w;
     height = h;
 
