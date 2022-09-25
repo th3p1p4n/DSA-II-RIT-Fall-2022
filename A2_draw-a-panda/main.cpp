@@ -11,24 +11,22 @@
 #include "main.h"
 
 
-// the window's width and height
-int width, height;
-
-// the number of vertices that the circles all currently have
-int vertNum = 10;
+int width, height; // the window's width and height
+int vertNum; // the number of vertices that the circles all currently have
 
 void init(void)
 {
-    // initialize the size of the window
+    // initialize global variables
     width = 600;
     height = 600;
+    vertNum = 10;
 }
 
 // called when the GL context need to be rendered
 void display(void)
 {
     // clear the screen to black, which is the background color
-    glClearColor(0.0, 0.0, 0.0, 0.0);
+    glClearColor(0.10, 0.68, 0.33, 0.0);
 
     // clear the buffer stored for drawing
     glClear(GL_COLOR_BUFFER_BIT);
@@ -36,10 +34,29 @@ void display(void)
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    // draw the circles
-    //TODO: use the circle-drawing functions to draw the panda
-    drawFilledCircle(1.0, 1.0, 1.0, 4.0, 4.0, 1.0);
-    drawWireframeCircle(0.0, 1.0, 0.0, 2.0, 2.0, 1.0,3.0);
+    // draw the circles that make up the panda
+    // body
+    drawFilledCircle(0.0, 0.0, 0.0, 5.0, 0.0, 4.0);
+    drawFilledCircle(1.0, 1.0, 1.0, 5.0, 0.0, 2.0);
+    drawFilledCircle(0.0, 0.0, 0.0, 1.5, 0.5, 1.2);
+    drawFilledCircle(0.0, 0.0, 0.0, 8.5, 0.5, 1.2);
+    // ears
+    drawFilledCircle(0.0, 0.0, 0.0, 3.0, 7.5, 1.0);
+    drawFilledCircle(0.0, 0.0, 0.0, 7.0, 7.5, 1.0);
+    // head
+    drawFilledCircle(1.0, 1.0, 1.0, 5.0, 5.0, 3.0);
+    drawWireframeCircle(0.0, 0.0, 0.0, 5.0, 5.0, 3.0, 5.0);
+    // mouth
+    drawWireframeCircle(0.0, 0.0, 0.0, 4.4, 4.0, 0.6, 5.0);
+    drawWireframeCircle(0.0, 0.0, 0.0, 5.6, 4.0, 0.6, 5.0);
+    drawFilledCircle(1.0, 1.0, 1.0, 5.0, 4.9, 1.0);
+    // nose
+    drawFilledCircle(0.0, 0.0, 0.0, 5.0, 4.7, 0.5);
+    // eyes
+    drawFilledCircle(0.0, 0.0, 0.0, 3.8, 6.0, 0.8);
+    drawFilledCircle(0.0, 0.0, 0.0, 6.2, 6.0, 0.8);
+    drawFilledCircle(1.0, 1.0, 1.0, 3.8, 6.0, 0.3);
+    drawFilledCircle(1.0, 1.0, 1.0, 6.2, 6.0, 0.3);
 
     glutPostRedisplay();
     glutSwapBuffers();
