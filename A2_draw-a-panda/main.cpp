@@ -1,3 +1,7 @@
+// Course: IGME 309-02
+// Student Name: Andrew Broderick
+// Assignment Number: 02
+
 #ifdef __APPLE__
 #include <GLUT/glut.h> // include glut for Mac
 #else
@@ -10,51 +14,14 @@
 // the window's width and height
 int width, height;
 
-// a circle
+// the number of vertices that the circles all currently have
 int vertNum = 10;
-float xo = 5.0f, yo = 5.0f;
-float r = 4.0f;
 
 void init(void)
 {
     // initialize the size of the window
     width = 600;
     height = 600;
-}
-
-void drawFilledCircle(float red, float green, float blue, float center_x, float
-    center_y, float radius)
-{
-    glColor3f(red, green, blue);
-
-    glBegin(GL_POLYGON);
-
-    for (int i = 0; i < vertNum; i++) {
-        float degree = (float)i / vertNum * 2.0f * 3.14f;
-        float x = radius * cos(degree) + center_x;
-        float y = radius * sin(degree) + center_y;
-        glVertex2f(x, y);
-    }
-
-    glEnd();
-}
-
-void drawWireframeCircle(float red, float green, float blue, float center_x, float
-    center_y, float radius, float lineWidth)
-{
-    glColor3f(red, green, blue);
-    glLineWidth(lineWidth);
-
-    glBegin(GL_LINE_LOOP);
-
-    for (int i = 0; i < vertNum; i++) {
-        float degree = (float)i / vertNum * 2.0f * 3.14f;
-        float x = radius * cos(degree) + center_x;
-        float y = radius * sin(degree) + center_y;
-        glVertex2f(x, y);
-    }
-
-    glEnd();
 }
 
 // called when the GL context need to be rendered
@@ -111,6 +78,41 @@ void keyboard(unsigned char key, int x, int y)
     }
 
     glutPostRedisplay();
+}
+
+void drawFilledCircle(float red, float green, float blue, float center_x, float
+    center_y, float radius)
+{
+    glColor3f(red, green, blue);
+
+    glBegin(GL_POLYGON);
+
+    for (int i = 0; i < vertNum; i++) {
+        float degree = (float)i / vertNum * 2.0f * 3.14f;
+        float x = radius * cos(degree) + center_x;
+        float y = radius * sin(degree) + center_y;
+        glVertex2f(x, y);
+    }
+
+    glEnd();
+}
+
+void drawWireframeCircle(float red, float green, float blue, float center_x, float
+    center_y, float radius, float lineWidth)
+{
+    glColor3f(red, green, blue);
+    glLineWidth(lineWidth);
+
+    glBegin(GL_LINE_LOOP);
+
+    for (int i = 0; i < vertNum; i++) {
+        float degree = (float)i / vertNum * 2.0f * 3.14f;
+        float x = radius * cos(degree) + center_x;
+        float y = radius * sin(degree) + center_y;
+        glVertex2f(x, y);
+    }
+
+    glEnd();
 }
 
 int main(int argc, char* argv[])
