@@ -30,7 +30,7 @@ void MyMesh::load(char* fileName)
 {
 
 }
-
+// prof just said this class isn't about c++. huh
 void MyMesh::load(const unsigned int p_vertNum, const unsigned int p_triNum, const float* p_vertices, const unsigned int* p_indices)
 {
 	vertNum = p_vertNum;

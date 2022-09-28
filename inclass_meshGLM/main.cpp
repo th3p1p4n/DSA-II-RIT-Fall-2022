@@ -10,6 +10,7 @@
 
 #include <iostream>
 using namespace std;
+using namespace glm;
 
 float canvasSize[] = { 10.0f, 10.0f };
 int rasterSize[] = { 600, 600 };
