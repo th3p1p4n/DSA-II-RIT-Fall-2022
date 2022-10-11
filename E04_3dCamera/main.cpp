@@ -11,34 +11,51 @@ int width, height;
 void init(void)
 {
     // initialize the size of the window
-    width = 600;
+    width = 1200;
     height = 600;
 }
 
 // called when the GL context need to be rendered
 void display(void)
 {
-    // clear the screen to white, which is the background color
+    // clear the screen
     glClearColor(1.0, 1.0, 1.0, 0.0);
 
     // clear the buffer stored for drawing
     glClear(GL_COLOR_BUFFER_BIT);
 
     glMatrixMode(GL_MODELVIEW);
-    // glLoadIdentity();
 
-    // specify the color for drawing
-    glColor3f(1.0, 0.0, 0.0);
+    // prepare for drawing
+    glColor3f(0.7, 0.7, 0.7);
+    glPointSize(20.0f);
+    glBegin(GL_LINES);
 
-    // specify the color for new drawing
-    glColor3f(0.0, 0.0, 1.0);
+    // draw the lines parallel to the x-axis
+    for (int i = -12; i < 13; i++) {
+        glVertex3f(-12.0f, 0.0f, float(i));
+        glVertex3f(12.0f, 0.0f, float(i));
+    }
 
-    // draw the origin of the canvas
-    glPointSize(30.0f);
-    glBegin(GL_POINTS);
-    glVertex2f(0.0f, 0.0f);
+    // draw the lines parallel to the z-axis
+    for (int i = -12; i < 13; i++) {
+        glVertex3f(float(i), 0.0f, -12.0f);
+        glVertex3f(float(i), 0.0f, 12.0f);
+    }
+
     glEnd();
-    glPointSize(1.0f);
+
+    // draw the lines that intersect with the origin
+    glColor3f(0.0, 0.0, 0.0);
+    glBegin(GL_LINES);
+
+    glVertex3f(-12.0f, 0.0f, 0.0f);
+    glVertex3f(12.0f, 0.0f, 0.0f);
+
+    glVertex3f(0.0f, 0.0f, -12.0f);
+    glVertex3f(0.0f, 0.0f, 12.0f);
+
+    glEnd();
 
     glPopMatrix();
 
@@ -52,15 +69,16 @@ void reshape(int w, int h)
     width = w;
     height = h;
 
-    //do an orthographic parallel projection, limited by screen/window size
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    gluLookAt(20, 20, -20, 0, 0, 0, 0, 1, 0);
+
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    // gluOrtho2D(0.0, 10.0, 0.0, 10.0);
-    gluOrtho2D(-5.0, 5.0, -5.0, 5.0);
+    gluPerspective(45, 2.0f , 0.1, 1000);
 
-    /* tell OpenGL to use the whole window for drawing */
-    glViewport(0, 0, (GLsizei)width, (GLsizei)height);
-    //glViewport((GLsizei) width/2, (GLsizei) height/2, (GLsizei) width, (GLsizei) height);
+    glViewport(0, 0, w, h);
+    glViewport(0, 0, w, h);
 
     glutPostRedisplay();
 }
@@ -83,7 +101,7 @@ int main(int argc, char* argv[])
     glutInitWindowSize((int)width, (int)height);
 
     // create the window with a title
-    glutCreateWindow("First OpenGL Program");
+    glutCreateWindow("Camera");
 
     /* --- register callbacks with GLUT --- */
 
