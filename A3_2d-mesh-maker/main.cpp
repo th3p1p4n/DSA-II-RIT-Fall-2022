@@ -7,24 +7,23 @@
 #else
 #include <GL/freeglut.h>
 #endif
-
 #include <iostream>
+#include "PolyObject.h"
+
 using namespace std;
 
 float canvasSize[] = { 10.0f, 10.0f };
 int rasterSize[] = { 800, 600 };
 
-// structure for storing 3 2D vertices of a triangle
-int numOfVertices = 0;
-float v[2 * 3];
 float color[3];
 
 float mousePos[2];
 
+PolyObject initPolyObj = PolyObject();
+vector<PolyObject> objects = { initPolyObj };
+
 void init(void)
 {
-    for (int i = 0; i < 6; i++)
-        v[i] = 0.0f;
     mousePos[0] = mousePos[1] = 0.0f;
     color[0] = 1.0f;
     color[1] = color[2] = 0.0f;
@@ -49,19 +48,8 @@ void display(void)
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    if (numOfVertices > 0 && numOfVertices < 3) {
-
-        glBegin(GL_LINE_STRIP);
-        for (int i = 0; i < numOfVertices; i++)
-            glVertex2fv(v + i * 2);
-        glVertex2fv(mousePos);
-        glEnd();
-    }
-    else if (numOfVertices == 3) {
-        glBegin(GL_TRIANGLES);
-        for (int i = 0; i < numOfVertices; i++)
-            glVertex2fv(v + i * 2);
-        glEnd();
+    for (int i = 0; i < objects.size(); i++) {
+        objects[i].draw();
     }
 
     drawCursor();
@@ -84,15 +72,11 @@ void reshape(int w, int h)
 void mouse(int button, int state, int x, int y)
 {
     if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
-        if (numOfVertices >= 3)
-            numOfVertices = 0;
-
         mousePos[0] = (float)x / rasterSize[0] * canvasSize[0];
         mousePos[1] = (float)(rasterSize[1] - y) / rasterSize[1] * canvasSize[1];
-        v[numOfVertices * 2 + 0] = mousePos[0];
-        v[numOfVertices * 2 + 1] = mousePos[1];
 
-        numOfVertices++;
+        objects[objects.size() - 1].addVertex(vec2(mousePos[0], mousePos[1]));
+
         glutPostRedisplay();
     }
 }
@@ -110,8 +94,12 @@ void motion(int x, int y)
 void keyboard(unsigned char key, int x, int y)
 {
     switch (key) {
-    case 27:
+    case 27: // esc
         exit(0);
+        break;
+    case 13: // enter
+        PolyObject newObj = PolyObject();
+        objects.push_back(newObj);
         break;
     }
 }
@@ -120,7 +108,7 @@ void menu(int value)
 {
     switch (value) {
     case 0: // clear
-        numOfVertices = 0;
+        objects = {};
         glutPostRedisplay();
         break;
     case 1: //exit
@@ -129,19 +117,21 @@ void menu(int value)
         color[0] = 1.0f;
         color[1] = 0.0f;
         color[2] = 0.0f;
-        glutPostRedisplay();
         break;
     case 3: // green
         color[0] = 0.0f;
         color[1] = 1.0f;
         color[2] = 0.0f;
-        glutPostRedisplay();
         break;
     case 4: // blue
         color[0] = 0.0f;
         color[1] = 0.0f;
         color[2] = 1.0f;
-        glutPostRedisplay();
+        break;
+    case 5: // black
+        color[0] = 0.0f;
+        color[1] = 0.0f;
+        color[2] = 0.0f;
         break;
     default:
         break;
@@ -153,6 +143,7 @@ void createMenu()
     glutAddMenuEntry("Red", 2);
     glutAddMenuEntry("Green", 3);
     glutAddMenuEntry("Blue", 4);
+    glutAddMenuEntry("Black", 5);
 
     glutCreateMenu(menu);
     glutAddMenuEntry("Clear", 0);

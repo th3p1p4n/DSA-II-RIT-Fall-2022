@@ -16,7 +16,6 @@ private:
 	vector <vec2> vertices; // all vertices in C++ vector
 	vec3 color; // color of this polygon
 public:
-
 	PolyObject();
 	~PolyObject();
 	void addVertex(vec2 p_vert); // add vertex at the end of the vertex list
