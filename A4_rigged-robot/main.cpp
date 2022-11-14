@@ -25,7 +25,6 @@ float canvas_width = 20.0f; float canvas_height = 20.0f;
 
 bool keyStates[256];
 int buttonState;
-float colors[3 * MAX_NUM_CIRCLE];
 float translations[2 * MAX_NUM_CIRCLE];
 float rotations[MAX_NUM_CIRCLE];
 
@@ -38,9 +37,6 @@ void init(void)
         keyStates[i] = false;
     }
     for (int i = 0; i < MAX_NUM_CIRCLE; i++) {
-        colors[i * 3 + 0] = 0.0f; // red
-        colors[i * 3 + 1] = 0.0f; // green
-        colors[i * 3 + 2] = 0.0f; // blue
 
         translations[i * 2 + 0] = 0.0f; // x
         translations[i * 2 + 1] = 0.0f; // y
@@ -51,67 +47,75 @@ void init(void)
     buttonState = -1;
 }
 
-void drawCircle(float radius, const float* c)
+void drawBox(float boxWidth, float boxHeight)
 {
-    glColor3fv(c);
+    glColor3f(0.4, 0.8, 0.8);
+    glLineWidth(3.0f);
+    glBegin(GL_POLYGON);
+    glVertex2f(0 - (boxWidth / 2.0), 0 - (boxHeight / 2.0));
+    glVertex2f(boxWidth / 2.0, 0 - (boxHeight / 2.0));
+    glVertex2f(boxWidth / 2.0, boxHeight / 2.0);
+    glVertex2f(0 - (boxWidth / 2.0), boxHeight / 2.0);
+    glEnd();
+
+    glColor3f(0.0, 0.0, 0.0);
     glLineWidth(3.0f);
     glBegin(GL_LINE_STRIP);
-    for (int i = 0; i <= 100; i++)
-        glVertex2f(radius * cosf(3.14 * 2 / 100 * i), radius * sinf(3.14 * 2 / 100 * i));
+    glVertex2f(0-(boxWidth /2.0), 0-(boxHeight /2.0));
+    glVertex2f(boxWidth /2.0, 0-(boxHeight /2.0));
+    glVertex2f(boxWidth / 2.0, boxHeight / 2.0);
+    glVertex2f(0 - (boxWidth / 2.0), boxHeight /2.0);
+    glVertex2f(0 - (boxWidth / 2.0), 0 - (boxHeight / 2.0));
     glEnd();
 }
 
 void display(void)
 {
-    glClearColor(1.0, 1.0, 1.0, 0.0);
+    glClearColor(0.5, 0.5, 0.5, 0.0);
     glClear(GL_COLOR_BUFFER_BIT);
 
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    // the following codes could be written in a for loop.
-    // Here I expand them so that you can better trace the changes of cirlce's coordinate system.
 
-    int cid = -1; // the index of current circle
-    // circle 0
-    cid = 0;
-    glTranslatef(translations[cid * 2 + 0], translations[cid * 2 + 1], 0.0f);
-    glRotatef(rotations[cid], 0.0f, 0.0f, 1.0f);
-    drawCircle(CIRCLE_RADIUM * (MAX_NUM_CIRCLE - cid) / MAX_NUM_CIRCLE, colors + cid * 3);
+    drawBox(10, 10);
+    //int cid = -1; // the index of current circle
+    //// circle 0
+    //cid = 0;
+    //glTranslatef(translations[cid * 2 + 0], translations[cid * 2 + 1], 0.0f);
+    //glRotatef(rotations[cid], 0.0f, 0.0f, 1.0f);
+    //drawCircle(CIRCLE_RADIUM * (MAX_NUM_CIRCLE - cid) / MAX_NUM_CIRCLE, colors + cid * 3);
 
-    // circle 1
-    cid = 1;
-    glTranslatef(translations[cid * 2 + 0], translations[cid * 2 + 1], 0.0f);
-    glRotatef(rotations[cid], 0.0f, 0.0f, 1.0f);
-    glPushMatrix(); // push the circle 1's CS to the modelview stack
-    drawCircle(CIRCLE_RADIUM * (MAX_NUM_CIRCLE - cid) / MAX_NUM_CIRCLE, colors + cid * 3);
-
-    // circle 2
-    cid = 2;
-    glTranslatef(translations[cid * 2 + 0], translations[cid * 2 + 1], 0.0f);
-    glRotatef(rotations[cid], 0.0f, 0.0f, 1.0f);
-    drawCircle(CIRCLE_RADIUM * (MAX_NUM_CIRCLE - cid) / MAX_NUM_CIRCLE, colors + cid * 3);
-
-    // circle 3
-    cid = 3;
-    glTranslatef(translations[cid * 2 + 0], translations[cid * 2 + 1], 0.0f);
-    glRotatef(rotations[cid], 0.0f, 0.0f, 1.0f);
-    drawCircle(CIRCLE_RADIUM * (MAX_NUM_CIRCLE - cid) / MAX_NUM_CIRCLE, colors + cid * 3);
+    //// circle 1
+    //cid = 1;
+    //glTranslatef(translations[cid * 2 + 0], translations[cid * 2 + 1], 0.0f);
+    //glRotatef(rotations[cid], 0.0f, 0.0f, 1.0f);
+    //glPushMatrix(); // push the circle 1's CS to the modelview stack
+    //drawCircle(CIRCLE_RADIUM * (MAX_NUM_CIRCLE - cid) / MAX_NUM_CIRCLE, colors + cid * 3);
 
 
-    glPopMatrix(); // back to the CS of Circle 1
-    // circle 4
-    cid = 4;
-    glTranslatef(translations[cid * 2 + 0], translations[cid * 2 + 1], 0.0f);
-    glRotatef(rotations[cid], 0.0f, 0.0f, 1.0f);
-    drawCircle(CIRCLE_RADIUM * (MAX_NUM_CIRCLE - cid) / MAX_NUM_CIRCLE, colors + cid * 3);
-
-    // circle 5
-    cid = 5;
-    glTranslatef(translations[cid * 2 + 0], translations[cid * 2 + 1], 0.0f);
-    glRotatef(rotations[cid], 0.0f, 0.0f, 1.0f);
-    drawCircle(CIRCLE_RADIUM * (MAX_NUM_CIRCLE - cid) / MAX_NUM_CIRCLE, colors + cid * 3);
-
+    //draw chest
+    //push matrix(so you can go back to chest)
+    //translate, draw neck
+    //translate, draw head
+    //pop matrix(return to the chest)
+    //push matrix
+    //translate, draw left arm
+    //translate, draw left hand
+    //pop matrix
+    //push matrix
+    //translate, draw right arm
+    //translate, draw right hand
+    //pop matrix
+    //translate, draw pelvis
+    //push matrix
+    //translate, draw left thigh
+    //translate, draw left lower leg
+    //translate, draw left foot
+    //pop matrix
+    //translate, draw right thigh
+    //translate, draw right lower leg
+    //translate, draw right foot
 
     glutSwapBuffers();
 }
@@ -135,29 +139,13 @@ void keyboard(unsigned char key, int x, int y)
     if (key == 27) // 'esc' key
         exit(0);
 
-    unsigned char asciiOffset = 49; // see an ascii table
-    for (unsigned char i = '1'; i < '7'; i++) {
-        if (key == i) {
-            keyStates[i] = true;
-            colors[(i - asciiOffset) * 3 + 0] = 1.0f;
-            colors[(i - asciiOffset) * 3 + 1] = 0.0f;
-            colors[(i - asciiOffset) * 3 + 2] = 0.0f;
-        }
-    }
     glutPostRedisplay();
 }
 
 void keyboardUp(unsigned char key, int x, int y)
 {
     unsigned char asciiOffset = 49; // see an ascii table
-    for (unsigned char i = '1'; i < '7'; i++) {
-        if (key == i) {
-            keyStates[i] = false;
-            colors[(i - asciiOffset) * 3 + 0] = 0.0f;
-            colors[(i - asciiOffset) * 3 + 1] = 0.0f;
-            colors[(i - asciiOffset) * 3 + 2] = 0.0f;
-        }
-    }
+
     glutPostRedisplay();
 }
 
