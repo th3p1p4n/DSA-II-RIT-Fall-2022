@@ -19,6 +19,7 @@ using namespace std;
 int win_width = 600, win_height = 600;
 float canvas_width = 20.0f; float canvas_height = 20.0f;
 
+const float PI = 3.1415926;
 
 bool keyStates[256];
 int buttonState;
@@ -63,6 +64,12 @@ void drawBox(float boxWidth, float boxHeight, float rotation)
     glVertex2f(e[0] * cos(rotation) - e[1] * sin(rotation), e[0] * sin(rotation) + e[1] * cos(rotation));
     glVertex2f(a[0] * cos(rotation) - a[1] * sin(rotation), a[0] * sin(rotation) + a[1] * cos(rotation));
     glEnd();
+
+    glColor3f(0.8, 0.0, 0.1);
+    glPointSize(8.0f);
+    glBegin(GL_POINTS);
+    glVertex2f(a[0], a[1]);
+    glEnd();
 }
 
 void display(void)
@@ -87,30 +94,37 @@ void display(void)
     //glPushMatrix(); // push the circle 1's CS to the modelview stack
     //drawCircle(CIRCLE_RADIUM * (MAX_NUM_CIRCLE - cid) / MAX_NUM_CIRCLE, colors + cid * 3);
 
-
-    //draw chest
-    drawBox(2.0, 2.0, 0.0);
-    //push matrix(so you can go back to chest)
-    //translate, draw neck
-    //translate, draw head
-    //pop matrix(return to the chest)
-    //push matrix
-    //translate, draw left arm
-    //translate, draw left hand
-    //pop matrix
-    //push matrix
-    //translate, draw right arm
-    //translate, draw right hand
-    //pop matrix
-    //translate, draw pelvis
-    //push matrix
-    //translate, draw left thigh
-    //translate, draw left lower leg
-    //translate, draw left foot
-    //pop matrix
-    //translate, draw right thigh
-    //translate, draw right lower leg
-    //translate, draw right foot
+    //pelvis
+    drawBox(2.5, 3.0, PI/2);
+    glPushMatrix();
+    // left thigh
+    glTranslatef(-1.0, 0.0, 0.0);
+    drawBox(3.0, 1.0, -PI / 2);
+    // left calf
+    glTranslatef(0.0, -3.0, 0.0);
+    drawBox(2.0, 1.0, -PI / 2);
+    // left foot
+    glTranslatef(0.0, -2.0, 0.0);
+    drawBox(1.5, 1.5, -PI / 2);
+    // right thigh
+    glPopMatrix();
+    glTranslatef(1.0, 0.0, 0.0);
+    drawBox(3.0, 1.0, -PI / 2);
+    // right calf
+    glTranslatef(0.0, -3.0, 0.0);
+    drawBox(2.0, 1.0, -PI / 2);
+    // right foot
+    glTranslatef(0.0, -2.0, 0.0);
+    drawBox(1.5, 1.5, -PI / 2);
+    // chest 
+    // neck
+    // head
+    // left upper arm
+    // left lower arm
+    // left hand
+    // right upper arm
+    // right lower arm
+    // right hand
 
     glutSwapBuffers();
 }
