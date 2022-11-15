@@ -16,17 +16,12 @@
 #include <math.h>
 using namespace std;
 
-#define MAX_NUM_CIRCLE 7
-#define CIRCLE_RADIUM 2.0
-
 int win_width = 600, win_height = 600;
 float canvas_width = 20.0f; float canvas_height = 20.0f;
 
 
 bool keyStates[256];
 int buttonState;
-float translations[2 * MAX_NUM_CIRCLE];
-float rotations[MAX_NUM_CIRCLE];
 
 float curMouse[2];
 float preMouse[2];
@@ -36,36 +31,37 @@ void init(void)
     for (int i = 0; i < 256; i++) {
         keyStates[i] = false;
     }
-    for (int i = 0; i < MAX_NUM_CIRCLE; i++) {
-
-        translations[i * 2 + 0] = 0.0f; // x
-        translations[i * 2 + 1] = 0.0f; // y
-
-        rotations[i] = 0.0f;
-    }
 
     buttonState = -1;
 }
 
-void drawBox(float boxWidth, float boxHeight)
+void drawBox(float boxWidth, float boxHeight, float rotation)
 {
+    float a[2] = { 0, 0 };
+    float b[2] = { 0, boxHeight / 2.0 };
+    float c[2] = { boxWidth, boxHeight / 2.0 };
+    float d[2] = { boxWidth, -1 * (boxHeight / 2.0) };
+    float e[2] = { 0, -1 * (boxHeight / 2.0) };
+
     glColor3f(0.4, 0.8, 0.8);
     glLineWidth(3.0f);
     glBegin(GL_POLYGON);
-    glVertex2f(0 - (boxWidth / 2.0), 0 - (boxHeight / 2.0));
-    glVertex2f(boxWidth / 2.0, 0 - (boxHeight / 2.0));
-    glVertex2f(boxWidth / 2.0, boxHeight / 2.0);
-    glVertex2f(0 - (boxWidth / 2.0), boxHeight / 2.0);
+    glVertex2f(a[0] * cos(rotation) - a[1] * sin(rotation), a[0]*sin(rotation)+a[1]*cos(rotation));
+    glVertex2f(b[0] * cos(rotation) - b[1] * sin(rotation), b[0] * sin(rotation) + b[1] * cos(rotation));
+    glVertex2f(c[0] * cos(rotation) - c[1] * sin(rotation), c[0] * sin(rotation) + c[1] * cos(rotation));
+    glVertex2f(d[0] * cos(rotation) - d[1] * sin(rotation), d[0] * sin(rotation) + d[1] * cos(rotation));
+    glVertex2f(e[0] * cos(rotation) - e[1] * sin(rotation), e[0] * sin(rotation) + e[1] * cos(rotation));
     glEnd();
 
     glColor3f(0.0, 0.0, 0.0);
     glLineWidth(3.0f);
     glBegin(GL_LINE_STRIP);
-    glVertex2f(0-(boxWidth /2.0), 0-(boxHeight /2.0));
-    glVertex2f(boxWidth /2.0, 0-(boxHeight /2.0));
-    glVertex2f(boxWidth / 2.0, boxHeight / 2.0);
-    glVertex2f(0 - (boxWidth / 2.0), boxHeight /2.0);
-    glVertex2f(0 - (boxWidth / 2.0), 0 - (boxHeight / 2.0));
+    glVertex2f(a[0] * cos(rotation) - a[1] * sin(rotation), a[0] * sin(rotation) + a[1] * cos(rotation));
+    glVertex2f(b[0] * cos(rotation) - b[1] * sin(rotation), b[0] * sin(rotation) + b[1] * cos(rotation));
+    glVertex2f(c[0] * cos(rotation) - c[1] * sin(rotation), c[0] * sin(rotation) + c[1] * cos(rotation));
+    glVertex2f(d[0] * cos(rotation) - d[1] * sin(rotation), d[0] * sin(rotation) + d[1] * cos(rotation));
+    glVertex2f(e[0] * cos(rotation) - e[1] * sin(rotation), e[0] * sin(rotation) + e[1] * cos(rotation));
+    glVertex2f(a[0] * cos(rotation) - a[1] * sin(rotation), a[0] * sin(rotation) + a[1] * cos(rotation));
     glEnd();
 }
 
@@ -77,8 +73,6 @@ void display(void)
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-
-    drawBox(10, 10);
     //int cid = -1; // the index of current circle
     //// circle 0
     //cid = 0;
@@ -95,6 +89,7 @@ void display(void)
 
 
     //draw chest
+    drawBox(2.0, 2.0, 0.0);
     //push matrix(so you can go back to chest)
     //translate, draw neck
     //translate, draw head
@@ -169,24 +164,14 @@ void motion(int x, int y)
     curMouse[0] = ((float)x / win_width - 0.5f) * canvas_width;
     curMouse[1] = ((float)(win_height - y) - 0.5f) / win_height * canvas_height;
 
-    if (buttonState == GLUT_LEFT_BUTTON) {
-        for (unsigned char i = '1'; i < '7'; i++) {
-            if (keyStates[i]) {
-                translations[(i - asciiOffset) * 2 + 0] += curMouse[0] - preMouse[0];
-                translations[(i - asciiOffset) * 2 + 1] += curMouse[1] - preMouse[1];
-            }
-        }
-        glutPostRedisplay();
-    }
-
-    else if (buttonState == GLUT_RIGHT_BUTTON) {
-        for (unsigned char i = '1'; i < '7'; i++) {
-            if (keyStates[i]) {
-                rotations[i - asciiOffset] += curMouse[0] - preMouse[0];
-            }
-        }
-        glutPostRedisplay();
-    }
+    //else if (buttonState == GLUT_RIGHT_BUTTON) {
+    //    for (unsigned char i = '1'; i < '7'; i++) {
+    //        if (keyStates[i]) {
+    //            rotations[i - asciiOffset] += curMouse[0] - preMouse[0];
+    //        }
+    //    }
+    //    glutPostRedisplay();
+    //}
 
     preMouse[0] = curMouse[0];
     preMouse[1] = curMouse[1];
@@ -199,7 +184,7 @@ int main(int argc, char* argv[])
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA);
     glutInitWindowSize(win_width, win_height);
-    glutCreateWindow("2D Transformation Tree");
+    glutCreateWindow("Robot Rig");
 
     glutReshapeFunc(reshape);
     glutDisplayFunc(display);
