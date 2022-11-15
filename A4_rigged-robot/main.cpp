@@ -3,8 +3,10 @@
 // Assignment 4
 
 //Usage:
-//Hold down the number keys , 1-7, to select one or multiple circles.
-//While circle(s) are selected, use the left mouse button to translate and use the right mouse button to rotate.
+// Press 'W' to select the parent part.
+// Press 'S' to select a child part.
+// Press the left and right arrow keys to cycle the neighbor parts.
+// Press 'A' and 'D' to rotate the current selected part.
 
 #ifdef __APPLE__
 #include <GLUT/glut.h>
@@ -27,6 +29,9 @@ int buttonState;
 float curMouse[2];
 float preMouse[2];
 
+int id = -1;
+float rotations[16] = { PI / 2, -PI / 2, -PI / 2, -PI / 2, -PI / 2, -PI / 2, -PI / 2, PI / 2, PI / 2, PI / 2, PI, PI, PI, 0.0, 0.0, 0.0 };
+
 void init(void)
 {
     for (int i = 0; i < 256; i++) {
@@ -38,12 +43,14 @@ void init(void)
 
 void drawBox(float boxWidth, float boxHeight, float rotation)
 {
+    // vertices used for drawing
     float a[2] = { 0, 0 };
     float b[2] = { 0, boxHeight / 2.0 };
     float c[2] = { boxWidth, boxHeight / 2.0 };
     float d[2] = { boxWidth, -1 * (boxHeight / 2.0) };
     float e[2] = { 0, -1 * (boxHeight / 2.0) };
 
+    // lines
     glColor3f(0.4, 0.8, 0.8);
     glLineWidth(3.0f);
     glBegin(GL_POLYGON);
@@ -54,6 +61,7 @@ void drawBox(float boxWidth, float boxHeight, float rotation)
     glVertex2f(e[0] * cos(rotation) - e[1] * sin(rotation), e[0] * sin(rotation) + e[1] * cos(rotation));
     glEnd();
 
+    // fill
     glColor3f(0.0, 0.0, 0.0);
     glLineWidth(3.0f);
     glBegin(GL_LINE_STRIP);
@@ -65,6 +73,7 @@ void drawBox(float boxWidth, float boxHeight, float rotation)
     glVertex2f(a[0] * cos(rotation) - a[1] * sin(rotation), a[0] * sin(rotation) + a[1] * cos(rotation));
     glEnd();
 
+    // origin
     glColor3f(0.8, 0.0, 0.1);
     glPointSize(8.0f);
     glBegin(GL_POINTS);
@@ -95,36 +104,76 @@ void display(void)
     //drawCircle(CIRCLE_RADIUM * (MAX_NUM_CIRCLE - cid) / MAX_NUM_CIRCLE, colors + cid * 3);
 
     //pelvis
-    drawBox(2.5, 3.0, PI/2);
+    id = 0;
+    drawBox(2.5, 3.0, rotations[id]);
     glPushMatrix();
     // left thigh
+    id++;
     glTranslatef(-1.0, 0.0, 0.0);
-    drawBox(3.0, 1.0, -PI / 2);
+    drawBox(3.0, 1.0, rotations[id]);
     // left calf
+    id++;
     glTranslatef(0.0, -3.0, 0.0);
-    drawBox(2.0, 1.0, -PI / 2);
+    drawBox(2.0, 1.0, rotations[id]);
     // left foot
+    id++;
     glTranslatef(0.0, -2.0, 0.0);
-    drawBox(1.5, 1.5, -PI / 2);
+    drawBox(1.5, 1.5, rotations[id]);
     // right thigh
+    id++;
     glPopMatrix();
+    glPushMatrix();
     glTranslatef(1.0, 0.0, 0.0);
-    drawBox(3.0, 1.0, -PI / 2);
+    drawBox(3.0, 1.0, rotations[id]);
     // right calf
+    id++;
     glTranslatef(0.0, -3.0, 0.0);
-    drawBox(2.0, 1.0, -PI / 2);
+    drawBox(2.0, 1.0, rotations[id]);
     // right foot
+    id++;
     glTranslatef(0.0, -2.0, 0.0);
-    drawBox(1.5, 1.5, -PI / 2);
+    drawBox(1.5, 1.5, rotations[id]);
     // chest 
+    id++;
+    glPopMatrix();
+    glTranslatef(0.0, 2.5, 0.0);
+    drawBox(2.7, 3.5, rotations[id]);
+    glPushMatrix();
     // neck
+    id++;
+    glTranslatef(0.0, 2.7, 0.0);
+    drawBox(1.0, 1.0, rotations[id]);
     // head
+    id++;
+    glTranslatef(0.0, 1.0, 0.0);
+    drawBox(2.0, 2.0, rotations[id]);
     // left upper arm
+    id++;
+    glPopMatrix();
+    glPushMatrix();
+    glTranslatef(-1.75, 2.0, 0.0);
+    drawBox(2.0, 1.0, rotations[id]);
     // left lower arm
+    id++;
+    glTranslatef(-2.0, 0.0, 0.0);
+    drawBox(1.5, 1.0, rotations[id]);
     // left hand
+    id++;
+    glTranslatef(-1.5, 0.0, 0.0);
+    drawBox(1.5, 1.5, rotations[id]);
     // right upper arm
+    id++;
+    glPopMatrix();
+    glTranslatef(1.75, 2.0, 0.0);
+    drawBox(2.0, 1.0, rotations[id]);
     // right lower arm
+    id++;
+    glTranslatef(2.0, 0.0, 0.0);
+    drawBox(1.5, 1.0, rotations[id]);
     // right hand
+    id++;
+    glTranslatef(1.5, 0.0, 0.0);
+    drawBox(1.5, 1.5, rotations[id]);
 
     glutSwapBuffers();
 }
