@@ -4,7 +4,6 @@
 
 //Usage:
 // Press 'W' and 'S' to cycle through body parts
-// Press the left and right arrow keys to cycle the neighbor parts.
 // Press 'A' and 'D' to rotate the current selected part.
 
 #ifdef __APPLE__
