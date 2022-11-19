@@ -47,9 +47,11 @@ void init(void)
 	g_cam.set(3.0f, 4.0f, 3.0f, 0.0f, 0.0f, 0.0f, g_winWidth, g_winHeight);
 	// set the color of on-screen texts
 	g_text.setColor(0.0f, 0.0f, 0.0f);
-
+	
 	// loading the input mesh
 	g_mesh.loadFromOBJ(meshFile);
+
+	g_mesh.computeAABB();
 }
 
 void initialGL()

@@ -44,6 +44,8 @@ private:
 	vec3 amb, diff, spec;
 	float shinness;
 
+	void drawAABB();
+
 	vec3 setFaceNormal(vec3 v0, vec3 v1, vec3 v2);
 	void prepareBufferObjects();
 	/** mutiple private drawing calls **/
@@ -54,6 +56,8 @@ private:
 public:
 	MyMesh();
 	~MyMesh();
+
+	void computeAABB();
 
 	void loadFromOBJ(const char* fileName);     // called at initialization
 	void update();   // usually called in idle, mouse, motion, keyboard callbacks

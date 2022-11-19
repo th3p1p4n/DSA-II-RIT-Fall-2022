@@ -17,6 +17,9 @@ MyMesh::MyMesh()
 	vNormals = NULL;
 	vbo_id = nbo_id = ibo_id = 0;
 
+	vec3 maxVert;
+	vec3 minVert;
+
 	amb = diff = spec = vec3(0.5);
 	shinness = 5.0f;
 
@@ -31,6 +34,42 @@ MyMesh::~MyMesh()
 	glDeleteBuffers(1, &ibo_id);
 }
 
+// Create a public function named computeAABB() in MyMesh class, which should be called in
+// the init() function in main.cpp, after the model file is loaded. This function should compute
+// the values of maxVert and minVert by iterating through all vertices.
+void MyMesh::computeAABB()
+{
+    //…
+    // you need to appropriately initialize maxVert and minVert…
+    //…
+	for (unsigned int i = 0; i < vertNum; i++)
+	{
+		// …
+		// add your code here…
+		// …
+	}
+}
+
+// Create a public function named drawAABB() in MyMesh class, which should be called in the
+// display() function in main.cpp.This function should draw a red wireframe box using the maxVert and minVert.
+// Hint : the eight corner points of the box can be found from the maximum and minimum vertices.
+void MyMesh::drawAABB()
+{
+	glDisable(GL_LIGHTING);
+
+	glMatrixMode(GL_MODELVIEW);
+	glPushMatrix();
+	glColor3f(1.0f, 0.0f, 0.0f);
+
+	glBegin(GL_LINES);
+
+	// …
+	// put your stuff here …
+	// …
+
+	glEnd();
+	glPopMatrix();
+}
 
 vec3 MyMesh::setFaceNormal(vec3 v0, vec3 v1, vec3 v2)
 {
