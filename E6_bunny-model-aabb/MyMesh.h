@@ -22,6 +22,9 @@ public:
 	ViewMode viewMode;
 
 private:
+	vec3 maxVert;
+	vec3 minVert;
+
 	float* vertices;
 	unsigned int* indices;
 	float* vNormals;
@@ -44,7 +47,6 @@ private:
 	vec3 amb, diff, spec;
 	float shinness;
 
-	void drawAABB();
 
 	vec3 setFaceNormal(vec3 v0, vec3 v1, vec3 v2);
 	void prepareBufferObjects();
@@ -58,6 +60,7 @@ public:
 	~MyMesh();
 
 	void computeAABB();
+	void drawAABB();
 
 	void loadFromOBJ(const char* fileName);     // called at initialization
 	void update();   // usually called in idle, mouse, motion, keyboard callbacks

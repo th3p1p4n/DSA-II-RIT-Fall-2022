@@ -11,14 +11,14 @@ using namespace std;
 
 MyMesh::MyMesh()
 {
-	vertNum = triNum = 0;
+	vertNum = triNum = 0.;
 	vertices = NULL;
 	indices = NULL;
 	vNormals = NULL;
 	vbo_id = nbo_id = ibo_id = 0;
 
-	vec3 maxVert;
-	vec3 minVert;
+	//vec3 maxVert = vec3(0.0);
+	//vec3 minVert = vec3(0.0);
 
 	amb = diff = spec = vec3(0.5);
 	shinness = 5.0f;
@@ -39,14 +39,34 @@ MyMesh::~MyMesh()
 // the values of maxVert and minVert by iterating through all vertices.
 void MyMesh::computeAABB()
 {
-    //…
-    // you need to appropriately initialize maxVert and minVert…
-    //…
-	for (unsigned int i = 0; i < vertNum; i++)
+	maxVert = vec3(0.0);
+	minVert = vec3(500.0);
+
+	for (int i = 0; i < vertNum; i++)
 	{
-		// …
-		// add your code here…
-		// …
+		// x
+		if (vertices[i * 3 + 0] > maxVert.x) {
+			maxVert.x = vertices[i * 3 + 0];
+		}
+		else if (vertices[i * 3 + 0] < minVert.x) {
+			minVert.x = vertices[i * 3 + 0];
+		}
+
+		// y
+		if (vertices[i * 3 + 1] > maxVert.y) {
+			maxVert.y = vertices[i * 3 + 1];
+		}
+		else if (vertices[i * 3 + 1] < minVert.y) {
+			minVert.y = vertices[i * 3 + 1];
+		}
+
+		// z
+		if (vertices[i * 3 + 2] > maxVert.z) {
+			maxVert.z = vertices[i * 3 + 2];
+		}
+		else if (vertices[i * 3 + 2] < minVert.z) {
+			minVert.z = vertices[i * 3 + 2];
+		}
 	}
 }
 
@@ -63,9 +83,15 @@ void MyMesh::drawAABB()
 
 	glBegin(GL_LINES);
 
-	// …
-	// put your stuff here …
-	// …
+	glVertex3f(maxVert.x, maxVert.y, maxVert.z);
+	glVertex3f(maxVert.x, maxVert.y, minVert.z);
+	glVertex3f(minVert.x, maxVert.y, maxVert.z);
+	glVertex3f(minVert.x, maxVert.y, minVert.z);
+
+	glVertex3f(minVert.x, minVert.y, minVert.x);
+	glVertex3f(maxVert.x, minVert.y, minVert.z);
+	glVertex3f(minVert.x, minVert.y, maxVert.z);
+	glVertex3f(minVert.x, minVert.y, minVert.z);
 
 	glEnd();
 	glPopMatrix();
