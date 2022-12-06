@@ -52,6 +52,7 @@ float targetColorIntensity = 0.5f;
 // bullets
 float bullet_r = 0.1f;
 vector<Bullet> bullets = {};
+float maxLifetime = 2.0f;
 
 // tracking the game time - millisecond 
 unsigned int curTime = 0;
@@ -113,7 +114,7 @@ void display(void)
 	
 	// TODO: bullets
 	for (int i = 0; i < bullets.size(); i++) {
-		//bullets[i].updatePosition();
+		bullets[i].draw(bullet_r, vertNum);
 	}
 
 	glutSwapBuffers();
@@ -127,15 +128,21 @@ void update() // GAME LOOP
 	float deltaTime = (float)(curTime - preTime) / 1000.0f; // frame-different time in seconds 
 
 	// update bullet positions using their individual velocities
-	//y += vel * deltaTime;
-	
-	// check for collisions. If target collided with any bullet, reset target
-	// update bullet lifespan timers
-	// check if any bullets' lifespans have elapsed, and if so, remove them
-
+	vector<Bullet> temp = {};
 	for (int i = 0; i < bullets.size(); i++) {
-		bullets[i].updatePosition(deltaTime);
+		bullets[i].updatePositionAndLifespan(deltaTime);
+		
+		// check if any bullets' lifespans have elapsed, and if so, remove them
+		if (bullets[i].life < 2.0f) {
+			temp.push_back(bullets[i]);
+		}
 	}
+	bullets = temp;
+	
+	// TODO: check for collisions. If target collided with any bullet, reset target
+
+
+
 
 	preTime = curTime; // make the curTime become the preTime for the next frame
 	glutPostRedisplay();
@@ -168,10 +175,10 @@ void keyboard(unsigned char key, int x, int y)
 		cannon_x += 0.2f;
 	}
 	if (key == 'k') {
-		cannonRotation -= rotationSpeed;
+		cannonRotation -= rotationSpeed/10;
 	}
 	if (key == 'l') {
-		cannonRotation += rotationSpeed;
+		cannonRotation += rotationSpeed/10;
 	}
 	if (key == 32) {// space bar
 		shootBullet(cannonRotation);
@@ -189,7 +196,7 @@ int main(int argc, char* argv[])
 	glutInitWindowSize((int)width, (int)height);
 
 	// create the window with a title
-	glutCreateWindow("Cannon");
+	glutCreateWindow("Cannon Game");
 
 	/* --- register callbacks with GLUT --- */
 	glutReshapeFunc(reshape);
@@ -227,5 +234,5 @@ void resetTarget() {
 
 
 void shootBullet(float cannonRotation) {
-
+	bullets.push_back(Bullet(cannonRotation, cannon_x, cannon_y));
 }
