@@ -19,7 +19,7 @@ public:
 		angle = _angle;
 		xPos = _xPos;
 		yPos = _yPos;
-		speed = 3.0;
+		speed = 5.0;
 		life = 0.0;
 	}
 
@@ -31,8 +31,8 @@ public:
 	}
 
 	void draw(float radius, int vertNum) {
-		glColor3f(0.0, 1.0, 0.0);
-		glBegin(GL_POLYGON);
+		glColor3f(0.0, 0.0, 0.0);
+		glBegin(GL_LINE_STRIP);
 		for (int i = 0; i < vertNum; i++) {
 			float degree = (float)i / vertNum * 2.0f * 3.14f;
 			float x = radius * cos(degree) + xPos;
@@ -40,6 +40,11 @@ public:
 			glVertex2f(x, y);
 		}
 		glEnd();
+	}
+
+	bool checkCollisions(float radius, float target_xPos, float target_yPos, float target_r) {
+		float distance = sqrt((xPos - target_xPos) * (xPos - target_xPos) + (yPos - target_yPos) * (yPos - target_yPos));
+		return (distance < target_r + radius);
 	}
 };
 

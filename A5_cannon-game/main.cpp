@@ -47,12 +47,13 @@ float targetInitialRadius = 0.2f;
 float target_r = targetInitialRadius;
 float target_xPos = 0.0f;
 float target_yPos = 0.0f;
-float targetColorIntensity = 0.5f;
+float targetColorIntensity = 0.0f;
+int targetHits = 0;
 
 // bullets
 float bullet_r = 0.1f;
 vector<Bullet> bullets = {};
-float maxLifetime = 2.0f;
+float maxLifetime = 10.0f;
 
 // tracking the game time - millisecond 
 unsigned int curTime = 0;
@@ -137,10 +138,17 @@ void update() // GAME LOOP
 	}
 	bullets = temp;
 	
-	// TODO: check for collisions. If target collided with any bullet, reset target
-
-
-
+	// check for collisions
+	temp = {};
+	for (int i = 0; i < bullets.size(); i++) {
+		if (bullets[i].checkCollisions(bullet_r, target_xPos, target_yPos, target_r)) {
+			targetHit();
+		}
+		else {
+			temp.push_back(bullets[i]);
+		}
+	}
+	bullets = temp;
 
 	preTime = curTime; // make the curTime become the preTime for the next frame
 	glutPostRedisplay();
@@ -173,10 +181,10 @@ void keyboard(unsigned char key, int x, int y)
 		cannon_x += 0.2f;
 	}
 	if (key == 'k') {
-		cannonRotation += rotationSpeed/10;
+		cannonRotation += rotationSpeed/20;
 	}
 	if (key == 'l') {
-		cannonRotation -= rotationSpeed/10;
+		cannonRotation -= rotationSpeed/20;
 	}
 	if (key == 32) {// space bar
 		shootBullet(cannonRotation);
@@ -228,9 +236,24 @@ void drawCircle(float radius, float x_pos, float y_pos, bool filled) {
 void resetTarget() {
 	target_xPos = (rand() % int((target_xMax - target_xMin) * 100)) / 100.0f + target_xMin;
 	target_yPos = (rand() % int((target_yMax - target_yMin) * 100)) / 100.0f + target_yMin;
+
+	targetColorIntensity = 0.1f;
+	targetHits = 0;
+	target_r = targetInitialRadius;
 }
 
 
 void shootBullet(float cannonRotation) {
 	bullets.push_back(Bullet(cannonRotation, cannon_x, cannon_y));
+}
+
+void targetHit() {
+	targetHits++;
+	if (targetHits > 30) {
+		resetTarget();
+	}
+	else {
+		targetColorIntensity += 0.03f;
+		target_r += 0.02f;
+	}
 }
