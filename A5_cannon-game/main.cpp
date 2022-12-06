@@ -102,10 +102,8 @@ void display(void)
 
 	// cannon launcher
 	glBegin(GL_LINES);
-	glMatrixMode(GL_MODELVIEW);
 	glVertex2f(cannon_x, cannon_y);
-	glRotatef(cannonRotation, cannon_x, cannon_y, 0.0);
-	glVertex2f(cannon_x, cannon_y + cannon_l);
+	glVertex2f(cannon_l*cos(cannonRotation) + cannon_x, cannon_l*sin(cannonRotation) + cannon_y);
 	glEnd();
 
 	// target circle
@@ -175,10 +173,10 @@ void keyboard(unsigned char key, int x, int y)
 		cannon_x += 0.2f;
 	}
 	if (key == 'k') {
-		cannonRotation -= rotationSpeed/10;
+		cannonRotation += rotationSpeed/10;
 	}
 	if (key == 'l') {
-		cannonRotation += rotationSpeed/10;
+		cannonRotation -= rotationSpeed/10;
 	}
 	if (key == 32) {// space bar
 		shootBullet(cannonRotation);
